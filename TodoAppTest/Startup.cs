@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TodoAppTest.Database;
 
 namespace TodoAppTest
 {
@@ -26,6 +27,18 @@ namespace TodoAppTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var connection = ConfigurationExtensions.GetConnectionString(this.Configuration, "DefaultConnection");
+            var context = new TodoContext(connection);
+            context.Users.Add(new User
+            {
+                Email = "admin@devlix.de",
+                Name = "admin",
+                Password = "admin",
+                Role = Enums.Roles.Admin,
+            });
+            context.SaveChanges();
+            services.AddTransient<TodoContext>(o => context);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
