@@ -96,11 +96,12 @@ namespace TodoAppTest.Controllers
         }
 
         [HttpPut]
-        public async Task<ResponseModel> UpdateUserAsync([FromBody] UserModel user)
+        [Route("{id}")]
+        public async Task<ResponseModel> UpdateUserAsync(int id, [FromBody] UserModel user)
         {
             try
             {
-                var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+                var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
                 if (dbUser == null)
                     return new ResponseModel
@@ -111,6 +112,8 @@ namespace TodoAppTest.Controllers
                 dbUser.Name = user.Name;
                 dbUser.Email = user.Email;
                 dbUser.Password = user.Password;
+
+                _context.Entry(dbUser).State = EntityState.Modified;
 
                 await _context.SaveChangesAsync();
 

@@ -22,7 +22,7 @@ namespace TodoAppTest.Controllers
         }
 
         [HttpGet]
-        [Route("{userId}")]
+        [Route("user/{userId}")]
         public async Task<ResponseModel> GetUserListsAsync(int userId)
         {
             try
@@ -55,7 +55,8 @@ namespace TodoAppTest.Controllers
         {
             try
             {
-                var data = await _context.TodoLists.FirstOrDefaultAsync(u => u.Id == id);
+                var data = await _context.TodoLists.Include(l => l.ListItems)
+                                         .FirstOrDefaultAsync(u => u.Id == id);
                 return new ResponseModel
                 {
                     Data = data,
@@ -96,11 +97,12 @@ namespace TodoAppTest.Controllers
         }
 
         [HttpPut]
-        public async Task<ResponseModel> UpdateListAsync([FromBody] TodoList list)
+        [Route("{id}")]
+        public async Task<ResponseModel> UpdateListAsync(int id, [FromBody] TodoList list)
         {
             try
             {
-                var dbList = await _context.TodoLists.FirstOrDefaultAsync(u => u.Id == list.Id);
+                var dbList = await _context.TodoLists.FirstOrDefaultAsync(u => u.Id == id);
 
                 if (dbList == null)
                     return new ResponseModel

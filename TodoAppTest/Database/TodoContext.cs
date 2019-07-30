@@ -9,7 +9,7 @@ using TodoAppTest.Database.FluentApi;
 
 namespace TodoAppTest.Database
 {
-    public class TodoContext:DbContext
+    public class TodoContext : DbContext
     {
         string connection = "";
         public TodoContext(string connection)

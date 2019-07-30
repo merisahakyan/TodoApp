@@ -30,15 +30,19 @@ namespace TodoAppTest
 
             var connection = ConfigurationExtensions.GetConnectionString(this.Configuration, "DefaultConnection");
             var context = new TodoContext(connection);
-            context.Users.Add(new User
+            var adminExists = context.Users.FirstOrDefault(u => u.Email == "admin@devlix.de");
+            if (adminExists == null)
             {
-                Email = "admin@devlix.de",
-                Name = "admin",
-                Password = "admin",
-                Role = Enums.Roles.Admin,
-            });
-            context.SaveChanges();
-            services.AddTransient<TodoContext>(o => context);
+                context.Users.Add(new User
+                {
+                    Email = "admin@devlix.de",
+                    Name = "admin",
+                    Password = "admin",
+                    Role = Enums.Roles.Admin,
+                });
+                context.SaveChanges();
+            }
+            services.AddSingleton<TodoContext>(o => context);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
