@@ -36,13 +36,13 @@ namespace TodoAppTest.Database
         }
     }
 
-    public class ApplicationContextFactory : IDesignTimeDbContextFactory<TodoContext>
-    {
-        public TodoContext CreateDbContext(string[] args)
-        {
-            var builder = new DbContextOptionsBuilder<TodoContext>();
-            builder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ApplicationDb;Trusted_Connection=True;ConnectRetryCount=0");
-            return new TodoContext("Server=(localdb)\\mssqllocaldb;Database=ApplicationDb;Trusted_Connection=True;ConnectRetryCount=0");
-        }
-    }
+    //public class ApplicationContextFactory : IDesignTimeDbContextFactory<TodoContext>
+    //{
+    //    public TodoContext CreateDbContext(string[] args)
+    //    {
+    //        var builder = new DbContextOptionsBuilder<TodoContext>();
+    //        builder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ApplicationDb;Trusted_Connection=True;ConnectRetryCount=0");
+    //        return new TodoContext("Server=(localdb)\\mssqllocaldb;Database=ApplicationDb;Trusted_Connection=True;ConnectRetryCount=0");
+    //    }
+    //}
 }
