@@ -23,6 +23,10 @@ namespace TodoAppTest.Database.FluentApi
                 .IsRequired();
 
             builder
+                .Property(b => b.Name)
+                .IsRequired();
+
+            builder
                 .HasOne<TodoList>(l => l.List)
                 .WithMany(u => u.ListItems)
                 .HasForeignKey(uw => uw.ListId)
