@@ -13,10 +13,10 @@ namespace TodoAppTest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ListItemsController : ControllerBase
+    public class ListItemsController : BaseController
     {
         private TodoContext _context;
-        public ListItemsController(TodoContext context)
+        public ListItemsController(TodoContext context):base(context)
         {
             _context = context;
         }
@@ -26,6 +26,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 _context.ListItems.Add(new ListItem
                 {
                     ListId = listItem.ListId,
@@ -54,6 +59,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 var dbList = await _context.ListItems.FirstOrDefaultAsync(u => u.Id == listItem.Id);
 
                 if (dbList == null)
@@ -88,6 +98,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 var dbList = await _context.ListItems.FirstOrDefaultAsync(u => u.Id == id);
                 if (dbList == null)
                     return new ResponseModel

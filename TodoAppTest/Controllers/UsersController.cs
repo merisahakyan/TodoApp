@@ -13,10 +13,10 @@ namespace TodoAppTest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private TodoContext _context;
-        public UsersController(TodoContext context)
+        public UsersController(TodoContext context) : base(context)
         {
             _context = context;
         }
@@ -26,7 +26,14 @@ namespace TodoAppTest.Controllers
         {
             try
             {
-                var data = await _context.Users.ToListAsync();
+                if (User?.Role != Enums.Roles.Admin)
+                {
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
+                }
+                var data = await _context.Users.Where(u => u.Role == Enums.Roles.User).ToListAsync();
                 return new ResponseModel
                 {
                     Data = data,

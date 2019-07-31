@@ -13,21 +13,26 @@ namespace TodoAppTest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TodoListsController : ControllerBase
+    public class TodoListsController : BaseController
     {
         private TodoContext _context;
-        public TodoListsController(TodoContext context)
+        public TodoListsController(TodoContext context) : base(context)
         {
             _context = context;
         }
 
         [HttpGet]
-        [Route("user/{userId}")]
-        public async Task<ResponseModel> GetUserListsAsync(int userId)
+        public async Task<ResponseModel> GetUserListsAsync()
         {
             try
             {
-                var data = await _context.TodoLists.Where(l => l.UserId == userId)
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
+
+                var data = await _context.TodoLists.Where(l => l.UserId == UserId)
                                                    .Select(l => new ListViewModel
                                                    {
                                                        Id = l.Id,
@@ -55,6 +60,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 var data = await _context.TodoLists.Include(l => l.ListItems)
                                          .FirstOrDefaultAsync(u => u.Id == id);
                 return new ResponseModel
@@ -78,6 +88,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 _context.TodoLists.Add(list);
                 await _context.SaveChangesAsync();
 
@@ -102,6 +117,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 var dbList = await _context.TodoLists.FirstOrDefaultAsync(u => u.Id == id);
 
                 if (dbList == null)
@@ -135,6 +155,11 @@ namespace TodoAppTest.Controllers
         {
             try
             {
+                if (User == null)
+                    return new ResponseModel
+                    {
+                        Status = HttpStatusCode.Unauthorized,
+                    };
                 var dbList = await _context.TodoLists.FirstOrDefaultAsync(u => u.Id == id);
                 if (dbList == null)
                     return new ResponseModel
